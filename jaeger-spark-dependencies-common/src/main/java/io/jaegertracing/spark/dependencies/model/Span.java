@@ -25,11 +25,11 @@ public class Span implements Serializable {
   private String traceId;
   private String operationName;
   private Long spanId;
-  private Long parentId;
 
   private Long startTime;
   private Process process;
   private List<KeyValue> tags;
+  private List<Reference> refs;
 
   public String getTraceId() {
     return traceId;
@@ -55,14 +55,6 @@ public class Span implements Serializable {
     this.spanId = spanId;
   }
 
-  public Long getParentId() {
-    return parentId;
-  }
-
-  public void setParentId(Long parentId) {
-    this.parentId = parentId;
-  }
-
   public long getStartTime() {
     return startTime;
   }
@@ -85,6 +77,14 @@ public class Span implements Serializable {
 
   public void setTags(List<KeyValue> tags) {
     this.tags = tags;
+  }
+
+  public List<Reference> getRefs() {
+    return refs;
+  }
+
+  public void setRefs(List<Reference> refs) {
+    this.refs = refs;
   }
 }
 

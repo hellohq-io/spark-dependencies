@@ -1,4 +1,5 @@
-[![Build Status][ci-img]][ci]
+[![Build Status][ci-img]][ci] [![Docker Build Status](https://img.shields.io/docker/build/jaegertracing/spark-dependencies.svg)](https://hub.docker.com/r/jaegertracing/spark-dependencies/builds/) 
+[![Docker Pulls](https://img.shields.io/docker/pulls/jaegertracing/spark-dependencies.svg)](https://hub.docker.com/r/jaegertracing/spark-dependencies/)
 
 # Jaeger Spark dependencies
 This is a Spark job that collects spans from storage, analyze links between services,
@@ -84,6 +85,9 @@ To build the job locally and run tests:
 ./mvnw clean install # if failed add SPARK_LOCAL_IP=127.0.0.1
 docker build -t jaegertracing/spark-dependencies:latest .
 ```
+
+In tests it's possible to specify version of Jaeger images by env variable `JAEGER_VERSION` 
+or system property `jaeger.version`. By default tests are using latest images.
 
 ## License
   
