@@ -200,12 +200,12 @@ public abstract class DependenciesTest {
 
     Map<String, Map<String, Long>> expectedDependencies = new HashMap<>();
     Map<String, Long> s1Descendants = new HashMap<>();
-    s1Descendants.put("S2", 1L);
-    s1Descendants.put("S3", 1L);
-    expectedDependencies.put("S1", s1Descendants);
+    s1Descendants.put("S2-bar", 1L);
+    s1Descendants.put("S3-baz", 1L);
+    expectedDependencies.put("S1-foo", s1Descendants);
     Map<String, Long> s2Descendants = new HashMap<>();
-    s2Descendants.put("S3", 1L);
-    expectedDependencies.put("S2", s2Descendants);
+    s2Descendants.put("S3-baz", 1L);
+    expectedDependencies.put("S2-bar", s2Descendants);
     assertDependencies(expectedDependencies);
   }
 

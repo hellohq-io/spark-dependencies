@@ -11,6 +11,9 @@ but other days can be explicitly specified.
 
 This repository is based on [zipkin-dependencies](https://github.com/openzipkin/zipkin-dependencies).
 
+This fork adds the operation name to the dependency tree so that dependencies are not only calculated
+between services but also operations.
+
 ## Quick-start
 Spark job can be run as docker container and also as java executable:
 
@@ -83,11 +86,17 @@ $ STORAGE=elasticsearch ES_NODES=http://localhost:9200 java -jar jaeger-spark-de
 To build the job locally and run tests:
 ```bash
 ./mvnw clean install # if failed add SPARK_LOCAL_IP=127.0.0.1
-docker build -t jaegertracing/spark-dependencies:latest .
+docker build -t hqlabs.azurecr.io/q-dependencies:latest .
 ```
 
 In tests it's possible to specify version of Jaeger images by env variable `JAEGER_VERSION` 
 or system property `jaeger.version`. By default tests are using latest images.
+
+## Push Docker image
+
+```bash
+docker push hqlabs.azurecr.io/q-dependencies:latest
+```
 
 ## License
   
