@@ -83,7 +83,7 @@ $ STORAGE=elasticsearch ES_NODES=http://localhost:9200 java -jar jaeger-spark-de
 To build the job locally and run tests:
 ```bash
 ./mvnw clean install # if failed add SPARK_LOCAL_IP=127.0.0.1
-docker build -t hqlabs.azurecr.io/q-dependencies:latest .
+docker build -t hellohq/spark-dependencies:latest .
 ```
 
 In tests it's possible to specify version of Jaeger images by env variable `JAEGER_VERSION` 
@@ -92,7 +92,7 @@ or system property `jaeger.version`. By default tests are using latest images.
 ## Push Docker image
 
 ```bash
-docker push hqlabs.azurecr.io/q-dependencies:latest
+docker push hellohq/spark-dependencies:latest
 ```
 
 ## License
