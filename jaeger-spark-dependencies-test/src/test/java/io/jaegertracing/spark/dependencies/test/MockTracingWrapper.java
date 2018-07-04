@@ -24,11 +24,13 @@ import io.opentracing.mock.MockTracer.SpanBuilder;
 public class MockTracingWrapper implements TracingWrapper<MockTracingWrapper> {
 
   private String serviceName;
+  private String operationName;
   private MockTracer tracer;
   private MockSpan span;
 
-  public MockTracingWrapper(MockTracer mockTracer, String serviceName) {
+  public MockTracingWrapper(MockTracer mockTracer, String serviceName, String operationName) {
     this.serviceName = serviceName;
+    this.operationName = operationName;
     this.tracer = mockTracer;
   }
 
@@ -44,7 +46,7 @@ public class MockTracingWrapper implements TracingWrapper<MockTracingWrapper> {
 
   @Override
   public String operationName() {
-    return span != null ? span.operationName() : null;
+    return operationName;
   }
 
   @Override

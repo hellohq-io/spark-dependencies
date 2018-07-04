@@ -70,7 +70,7 @@ public class SpansToDependencyLinks implements Function<Iterable<Span>, Iterable
                 if (parents.size() > 1) {
                     serverSpan(parents)
                         .ifPresent(parent ->
-                          result.add(new Dependency(parent.getProcess().getServiceName(), span.getProcess().getServiceName()))
+                          result.add(new Dependency(parent.getProcess().getServiceName() + "-" + parent.getOperationName(), span.getProcess().getServiceName() + "-" + span.getOperationName()))
                     );
                 } else {
                     // this is jaeger span or zipkin native (not shared!)
@@ -78,7 +78,7 @@ public class SpansToDependencyLinks implements Function<Iterable<Span>, Iterable
                     if (parent.getProcess() == null || parent.getProcess().getServiceName() == null) {
                         continue;
                     }
-                    result.add(new Dependency(parent.getProcess().getServiceName(), span.getProcess().getServiceName()));
+                    result.add(new Dependency(parent.getProcess().getServiceName() + "-" + parent.getOperationName(), span.getProcess().getServiceName() + "-" + span.getOperationName()));
                 }
             }
         }

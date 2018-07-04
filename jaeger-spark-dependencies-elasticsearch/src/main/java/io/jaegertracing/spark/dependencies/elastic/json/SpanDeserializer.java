@@ -46,6 +46,7 @@ public class SpanDeserializer extends StdDeserializer<Span> {
     String parentIdHex = node.get("parentSpanID").asText();
     String traceIdHex = node.get("traceID").asText();
     String startTimeStr = node.get("startTime").asText();
+    String operationNameStr = node.get("operationName").asText();
 
     BigInteger spanId = new BigInteger(spanIdHex, 16);
     BigInteger parentId = new BigInteger(parentIdHex, 16);
@@ -60,6 +61,7 @@ public class SpanDeserializer extends StdDeserializer<Span> {
     span.setSpanId(spanId.longValue());
     span.setParentId(parentId.longValue());
     span.setTraceId(traceIdHex);
+    span.setOperationName(operationNameStr);
     span.setStartTime(startTimeStr != null ? Long.parseLong(startTimeStr) : null);
     span.setProcess(process);
     span.setTags(Arrays.asList(tags));

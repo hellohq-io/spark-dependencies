@@ -29,26 +29,28 @@ public class DependencyLinksDerivatorTest {
 
   @Test
   public void testRootToMap() {
-    Node<MockTracingWrapper> root = new Node<>(new MockTracingWrapper(new MockTracer(), "foo"), null);
-    new Node<>(new MockTracingWrapper(new MockTracer(), "child1"), root);
-    new Node<>(new MockTracingWrapper(new MockTracer(), "child1"), root);
-    new Node<>(new MockTracingWrapper(new MockTracer(), "child2"), root);
-    Node<MockTracingWrapper> child3 = new Node<>(new MockTracingWrapper(new MockTracer(), "child3"), root);
-    Node<MockTracingWrapper> child33 = new Node<>(new MockTracingWrapper(new MockTracer(), "child33"), child3);
-    new Node<>(new MockTracingWrapper(new MockTracer(), "child333"), child33);
+    Node<MockTracingWrapper> root = new Node<>(new MockTracingWrapper(new MockTracer(), "foo", "bar"), null);
+    new Node<>(new MockTracingWrapper(new MockTracer(), "child1", "op1"), root);
+    new Node<>(new MockTracingWrapper(new MockTracer(), "child1", "op2"), root);
+    new Node<>(new MockTracingWrapper(new MockTracer(), "child1", "op2"), root);
+    new Node<>(new MockTracingWrapper(new MockTracer(), "child2", "op3"), root);
+    Node<MockTracingWrapper> child3 = new Node<>(new MockTracingWrapper(new MockTracer(), "child3", "op4"), root);
+    Node<MockTracingWrapper> child33 = new Node<>(new MockTracingWrapper(new MockTracer(), "child33", "op5"), child3);
+    new Node<>(new MockTracingWrapper(new MockTracer(), "child333", "op6"), child33);
 
     Map<String, Map<String, Long>> depLinks = DependencyLinkDerivator.serviceDependencies(root);
     // 3 parents
+    Map<String, Long> test = depLinks.get("foo-bar");
     assertEquals(3, depLinks.size());
-    assertEquals(3, depLinks.get("foo").size());
-    assertEquals(1, depLinks.get("child3").size());
-    assertEquals(1, depLinks.get("child33").size());
+    assertEquals(4, depLinks.get("foo-bar").size());
+    assertEquals(1, depLinks.get("child3-op4").size());
+    assertEquals(1, depLinks.get("child33-op5").size());
 
-    assertEquals(Long.valueOf(2), depLinks.get("foo").get("child1"));
-    assertEquals(Long.valueOf(1), depLinks.get("foo").get("child2"));
-    assertEquals(Long.valueOf(1), depLinks.get("foo").get("child3"));
-    assertEquals(Long.valueOf(1), depLinks.get("child3").get("child33"));
-    assertEquals(Long.valueOf(1), depLinks.get("child33").get("child333"));
+    assertEquals(Long.valueOf(2), depLinks.get("foo-bar").get("child1-op2"));
+    assertEquals(Long.valueOf(1), depLinks.get("foo-bar").get("child2-op3"));
+    assertEquals(Long.valueOf(1), depLinks.get("foo-bar").get("child3-op4"));
+    assertEquals(Long.valueOf(1), depLinks.get("child3-op4").get("child33-op5"));
+    assertEquals(Long.valueOf(1), depLinks.get("child33-op5").get("child333-op6"));
   }
 
   @Test

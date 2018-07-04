@@ -29,10 +29,10 @@ public class TraversalsTest {
 
   @Test
   public void testInorder() {
-    Node<MockTracingWrapper> root = new Node<>(new MockTracingWrapper(new MockTracer(), "foo"), null);
-    Node<MockTracingWrapper> child1 = new Node<>(new MockTracingWrapper(new MockTracer(), "child1"), root);
-    Node<MockTracingWrapper> child2 = new Node<>(new MockTracingWrapper(new MockTracer(), "child2"), root);
-    Node<MockTracingWrapper> child3 = new Node<>(new MockTracingWrapper(new MockTracer(), "child3"), root);
+    Node<MockTracingWrapper> root = new Node<>(new MockTracingWrapper(new MockTracer(), "foo", "bar"), null);
+    Node<MockTracingWrapper> child1 = new Node<>(new MockTracingWrapper(new MockTracer(), "child1", "op1"), root);
+    Node<MockTracingWrapper> child2 = new Node<>(new MockTracingWrapper(new MockTracer(), "child2", "op2"), root);
+    Node<MockTracingWrapper> child3 = new Node<>(new MockTracingWrapper(new MockTracer(), "child3", "op3"), root);
 
     List<Node> nodes = new ArrayList<>();
     Traversals.postOrder(root, (node, parent) -> {
@@ -45,8 +45,8 @@ public class TraversalsTest {
     });
     assertEquals(new ArrayList<>(Arrays.asList(child1, child2, child3, root)), nodes);
 
-    Node<MockTracingWrapper> child33 = new Node<>(new MockTracingWrapper(new MockTracer(), "child33"), child3);
-    Node<MockTracingWrapper> child333 = new Node<>(new MockTracingWrapper(new MockTracer(), "child333"), child33);
+    Node<MockTracingWrapper> child33 = new Node<>(new MockTracingWrapper(new MockTracer(), "child33", "op33"), child3);
+    Node<MockTracingWrapper> child333 = new Node<>(new MockTracingWrapper(new MockTracer(), "child333", "op333"), child33);
 
     List<Node> nodes2 = new ArrayList<>();
     List<Node> parents2 = new ArrayList<>();

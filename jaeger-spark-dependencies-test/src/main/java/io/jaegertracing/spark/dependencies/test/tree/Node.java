@@ -54,4 +54,8 @@ public class Node<T extends TracingWrapper> {
   public String getServiceName() {
     return tracingWrapper.serviceName();
   }
+
+  public String getOperationName() {
+    return tracingWrapper.operationName();
+  }
 }

@@ -23,6 +23,7 @@ public class Span implements Serializable {
   private static final long serialVersionUID = 0L;
 
   private String traceId;
+  private String operationName;
   private Long spanId;
   private Long parentId;
 
@@ -36,6 +37,14 @@ public class Span implements Serializable {
 
   public void setTraceId(String traceId) {
     this.traceId = traceId;
+  }
+
+  public String getOperationName() {
+    return operationName;
+  }
+
+  public void setOperationName(String operationName) {
+    this.operationName = operationName;
   }
 
   public Long getSpanId() {

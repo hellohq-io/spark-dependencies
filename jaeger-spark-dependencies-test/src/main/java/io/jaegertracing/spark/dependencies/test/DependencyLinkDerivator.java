@@ -38,31 +38,31 @@ public class DependencyLinkDerivator {
       // e.g. for each descendant there is a separate client span (we follow zipkin semantics)
       if (child.getTracingWrapper().get() instanceof TracingWrapper.ZipkinWrapper) {
         if (!child.getDescendants().isEmpty()) {
-          Map<String, Long> stringLongMap = dependenciesMap.get(child.getServiceName());
+          Map<String, Long> stringLongMap = dependenciesMap.get(child.getServiceName() + "-" + child.getOperationName());
           if (stringLongMap == null) {
             stringLongMap = new LinkedHashMap<>();
-            dependenciesMap.put(child.getServiceName(), stringLongMap);
+            dependenciesMap.put(child.getServiceName() + "-" + child.getOperationName(), stringLongMap);
           }
-          Long internalCallCount = stringLongMap.get(child.getServiceName());
+          Long internalCallCount = stringLongMap.get(child.getServiceName() + "-" + child.getOperationName());
           if (internalCallCount == null) {
             internalCallCount = 0L;
           }
-          stringLongMap.put(child.getServiceName(), internalCallCount + child.getDescendants().size());
+          stringLongMap.put(child.getServiceName() + "-" + child.getOperationName(), internalCallCount + child.getDescendants().size());
         }
       }
 
       if (parent != null) {
-        Map<String, Long> childMap = dependenciesMap.get(parent.getServiceName());
+        Map<String, Long> childMap = dependenciesMap.get(parent.getServiceName() + "-" + parent.getOperationName());
         if (childMap == null) {
           childMap = new LinkedHashMap<>();
-          dependenciesMap.put(parent.getServiceName(), childMap);
+          dependenciesMap.put(parent.getServiceName() + "-" + parent.getOperationName(), childMap);
         }
 
-        Long callCount = childMap.get(child.getServiceName());
+        Long callCount = childMap.get(child.getServiceName() + "-" + child.getOperationName());
         if (callCount == null) {
           callCount = 0L;
         }
-        childMap.put(child.getServiceName(), ++callCount);
+        childMap.put(child.getServiceName() + "-" + child.getOperationName(), ++callCount);
       }
     });
     return dependenciesMap;

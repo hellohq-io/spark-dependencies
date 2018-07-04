@@ -64,102 +64,102 @@ public abstract class DependenciesTest {
    */
   protected abstract void waitBetweenTraces() throws InterruptedException;
 
-  @Test
-  public void testJaegerOneTrace() throws Exception {
-    TreeGenerator<Tracer> treeGenerator = new TreeGenerator(
-        TracersGenerator.generateJaeger(5, collectorUrl));
-    Node<JaegerWrapper> root = treeGenerator.generateTree(50, 3);
-    Traversals.postOrder(root, (node, parent) -> node.getTracingWrapper().get().getSpan().finish());
-    waitBetweenTraces();
-    // TODO move to TracersGenerator once jaeger tracer implements closeable.
-    treeGenerator.getTracers().forEach(tracer -> {
-      tracer.getTracer().close();
-    });
-    waitJaegerQueryContains(root.getServiceName(), root.getTracingWrapper().operationName());
+  // @Test
+  // public void testJaegerOneTrace() throws Exception {
+  //   TreeGenerator<Tracer> treeGenerator = new TreeGenerator(
+  //       TracersGenerator.generateJaeger(5, collectorUrl));
+  //   Node<JaegerWrapper> root = treeGenerator.generateTree(50, 3);
+  //   Traversals.postOrder(root, (node, parent) -> node.getTracingWrapper().get().getSpan().finish());
+  //   waitBetweenTraces();
+  //   // TODO move to TracersGenerator once jaeger tracer implements closeable.
+  //   treeGenerator.getTracers().forEach(tracer -> {
+  //     tracer.getTracer().close();
+  //   });
+  //   waitJaegerQueryContains(root.getServiceName(), root.getTracingWrapper().operationName());
 
-    deriveDependencies();
-    assertDependencies(DependencyLinkDerivator.serviceDependencies(root));
-  }
+  //   deriveDependencies();
+  //   assertDependencies(DependencyLinkDerivator.serviceDependencies(root));
+  // }
 
-  @Test
-  public void testJaegerMultipleTraces() throws Exception {
-    TreeGenerator<Tracer> treeGenerator = new TreeGenerator(
-        TracersGenerator.generateJaeger(50, collectorUrl));
-    Map<String, Map<String, Long>> expectedDependencies = new LinkedHashMap<>();
-    for (int i = 0; i < 20; i++) {
-      Node<JaegerWrapper> root = treeGenerator.generateTree(50, 15);
-      DependencyLinkDerivator.serviceDependencies(root, expectedDependencies);
-      Traversals.postOrder(root, (node, parent) -> node.getTracingWrapper().get().getSpan().finish());
-      waitBetweenTraces();
-      waitJaegerQueryContains(root.getServiceName(), root.getTracingWrapper().operationName());
-    }
-    // flush and wait for reported data
-    treeGenerator.getTracers().forEach(tracer -> tracer.getTracer().close());
+  // @Test
+  // public void testJaegerMultipleTraces() throws Exception {
+  //   TreeGenerator<Tracer> treeGenerator = new TreeGenerator(
+  //       TracersGenerator.generateJaeger(50, collectorUrl));
+  //   Map<String, Map<String, Long>> expectedDependencies = new LinkedHashMap<>();
+  //   for (int i = 0; i < 20; i++) {
+  //     Node<JaegerWrapper> root = treeGenerator.generateTree(50, 15);
+  //     DependencyLinkDerivator.serviceDependencies(root, expectedDependencies);
+  //     Traversals.postOrder(root, (node, parent) -> node.getTracingWrapper().get().getSpan().finish());
+  //     waitBetweenTraces();
+  //     waitJaegerQueryContains(root.getServiceName(), root.getTracingWrapper().operationName());
+  //   }
+  //   // flush and wait for reported data
+  //   treeGenerator.getTracers().forEach(tracer -> tracer.getTracer().close());
 
-    deriveDependencies();
-    assertDependencies(expectedDependencies);
-  }
+  //   deriveDependencies();
+  //   assertDependencies(expectedDependencies);
+  // }
 
-  @Test
-  public void testZipkinOneTraceFixed6NodesTwoTracers() throws Exception {
-    Tuple<Tracing, Flushable> rootTuple = TracersGenerator.createZipkin("root", zipkinCollectorUrl);
-    Tuple<Tracing, Flushable> tracer2 = TracersGenerator.createZipkin("tracer2", zipkinCollectorUrl);
+  // @Test
+  // public void testZipkinOneTraceFixed6NodesTwoTracers() throws Exception {
+  //   Tuple<Tracing, Flushable> rootTuple = TracersGenerator.createZipkin("root", zipkinCollectorUrl);
+  //   Tuple<Tracing, Flushable> tracer2 = TracersGenerator.createZipkin("tracer2", zipkinCollectorUrl);
 
-    Node<ZipkinWrapper> root = new Node<>(new ZipkinWrapper(rootTuple.getA(), "root"), null);
-    Node<ZipkinWrapper> child11 = new Node<>(new ZipkinWrapper(tracer2.getA(), "tracer2"), root);
-    new Node<>(new ZipkinWrapper(tracer2.getA(), "tracer2"), root);
-    new Node<>(new ZipkinWrapper(tracer2.getA(), "tracer2"), root);
+  //   Node<ZipkinWrapper> root = new Node<>(new ZipkinWrapper(rootTuple.getA(), "root"), null);
+  //   Node<ZipkinWrapper> child11 = new Node<>(new ZipkinWrapper(tracer2.getA(), "tracer2"), root);
+  //   new Node<>(new ZipkinWrapper(tracer2.getA(), "tracer2"), root);
+  //   new Node<>(new ZipkinWrapper(tracer2.getA(), "tracer2"), root);
 
-    new Node<>(new ZipkinWrapper(tracer2.getA(), "tracer2"), child11);
-    new Node<>(new ZipkinWrapper(tracer2.getA(), "tracer2"), child11);
+  //   new Node<>(new ZipkinWrapper(tracer2.getA(), "tracer2"), child11);
+  //   new Node<>(new ZipkinWrapper(tracer2.getA(), "tracer2"), child11);
 
 
-    Traversals.postOrder(root, (node, parent) -> node.getTracingWrapper().get().getSpan().finish());
-    rootTuple.getA().close();
-    tracer2.getA().close();
-    waitBetweenTraces();
+  //   Traversals.postOrder(root, (node, parent) -> node.getTracingWrapper().get().getSpan().finish());
+  //   rootTuple.getA().close();
+  //   tracer2.getA().close();
+  //   waitBetweenTraces();
 
-    waitJaegerQueryContains(root.getServiceName(), root.getTracingWrapper().operationName());
-    deriveDependencies();
-    assertDependencies(DependencyLinkDerivator.serviceDependencies(root));
-  }
+  //   waitJaegerQueryContains(root.getServiceName(), root.getTracingWrapper().operationName());
+  //   deriveDependencies();
+  //   assertDependencies(DependencyLinkDerivator.serviceDependencies(root));
+  // }
 
-  @Test
-  public void testZipkinOneTrace() throws Exception {
-    TreeGenerator<Tracing> treeGenerator = new TreeGenerator(TracersGenerator.generateZipkin(2, zipkinCollectorUrl));
-    Node<ZipkinWrapper> root = treeGenerator.generateTree(50, 3);
-    Traversals.postOrder(root, (node, parent) -> node.getTracingWrapper().get().getSpan().finish());
-    waitBetweenTraces();
-    treeGenerator.getTracers().forEach(tracer -> {
-      tracer.getTracer().close();
-      // tracer.close does not seem to flush all data
-      tracer.flushable().flush();
-    });
+  // @Test
+  // public void testZipkinOneTrace() throws Exception {
+  //   TreeGenerator<Tracing> treeGenerator = new TreeGenerator(TracersGenerator.generateZipkin(2, zipkinCollectorUrl));
+  //   Node<ZipkinWrapper> root = treeGenerator.generateTree(50, 3);
+  //   Traversals.postOrder(root, (node, parent) -> node.getTracingWrapper().get().getSpan().finish());
+  //   waitBetweenTraces();
+  //   treeGenerator.getTracers().forEach(tracer -> {
+  //     tracer.getTracer().close();
+  //     // tracer.close does not seem to flush all data
+  //     tracer.flushable().flush();
+  //   });
 
-    waitJaegerQueryContains(root.getServiceName(), root.getTracingWrapper().operationName());
-    deriveDependencies();
-    assertDependencies(DependencyLinkDerivator.serviceDependencies(root));
-  }
+  //   waitJaegerQueryContains(root.getServiceName(), root.getTracingWrapper().operationName());
+  //   deriveDependencies();
+  //   assertDependencies(DependencyLinkDerivator.serviceDependencies(root));
+  // }
 
-  @Test
-  public void testZipkinMultipleTraces() throws Exception {
-    TreeGenerator<Tracing> treeGenerator = new TreeGenerator(TracersGenerator.generateZipkin(5, zipkinCollectorUrl));
-    Map<String, Map<String, Long>> expectedDependencies = new LinkedHashMap<>();
-    for (int i = 0; i < 20; i++) {
-      Node<ZipkinWrapper> root = treeGenerator.generateTree(50, 3);
-      DependencyLinkDerivator.serviceDependencies(root, expectedDependencies);
-      Traversals.postOrder(root, (node, parent) -> node.getTracingWrapper().get().getSpan().finish());
-      waitBetweenTraces();
-      waitJaegerQueryContains(root.getServiceName(), root.getTracingWrapper().operationName());
-    }
-    treeGenerator.getTracers().forEach(tracer -> {
-      tracer.getTracer().close();
-      tracer.flushable().flush();
-    });
+  // @Test
+  // public void testZipkinMultipleTraces() throws Exception {
+  //   TreeGenerator<Tracing> treeGenerator = new TreeGenerator(TracersGenerator.generateZipkin(5, zipkinCollectorUrl));
+  //   Map<String, Map<String, Long>> expectedDependencies = new LinkedHashMap<>();
+  //   for (int i = 0; i < 20; i++) {
+  //     Node<ZipkinWrapper> root = treeGenerator.generateTree(50, 3);
+  //     DependencyLinkDerivator.serviceDependencies(root, expectedDependencies);
+  //     Traversals.postOrder(root, (node, parent) -> node.getTracingWrapper().get().getSpan().finish());
+  //     waitBetweenTraces();
+  //     waitJaegerQueryContains(root.getServiceName(), root.getTracingWrapper().operationName());
+  //   }
+  //   treeGenerator.getTracers().forEach(tracer -> {
+  //     tracer.getTracer().close();
+  //     tracer.flushable().flush();
+  //   });
 
-    deriveDependencies();
-    assertDependencies(expectedDependencies);
-  }
+  //   deriveDependencies();
+  //   assertDependencies(expectedDependencies);
+  // }
 
   protected void assertDependencies(Map<String, Map<String, Long>> expectedDependencies) throws IOException {
     Request request = new Request.Builder()
